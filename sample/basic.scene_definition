@@ -1,0 +1,5 @@
+version 1.0
+
+dimension 1920 1080
+
+Sphere .pos vec3 0 0 0 .radius 50 .color vec3 0 0 255  

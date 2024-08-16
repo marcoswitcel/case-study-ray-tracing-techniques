@@ -1,4 +1,4 @@
 
 run:
 	g++ src/main.cpp -o target/main
-	./target/main --scene teste.scene
+	cd target && ./main --scene ../sample/basic.scene_definition
