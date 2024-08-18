@@ -43,13 +43,13 @@ void generate_and_export(Render_Parameters &render_parameters)
   export_ppm_binary_file("scene.ppm", render_parameters.width, render_parameters.height, buffer);
 }
 
-Vec3<float> canvas_to_viewport(int64_t x, int64_t y)
+Vec3<float> canvas_to_viewport(int64_t x, int64_t y, Render_Parameters &parameters)
 {
-  Vec3<float> viewport = { (float) x, (float) y, 1};
+  Vec3<float> viewport = { (float) x, (float) y, parameters.projection_plane_d };
   return viewport;
 }
 
-RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, int64_t min, int64_t max)
+RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float min, float max)
 {
   RGB<uint8_t> color = { 0 , 255, 255 };
   return color;
@@ -74,8 +74,8 @@ void ray_trace_scene(Render_Parameters &render_parameters)
     {
       auto &pixel = buffer[(y + half_height ) * width + (x + half_width)];
 
-      Vec3<float> ray_dir = canvas_to_viewport(x, y);
-      pixel = trace_ray(origin, ray_dir, 1, std::numeric_limits<int64_t>::max());
+      Vec3<float> ray_dir = canvas_to_viewport(x, y, render_parameters);
+      pixel = trace_ray(origin, ray_dir, 1.0, std::numeric_limits<float>::infinity());
     }
   }
 
