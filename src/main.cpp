@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string.h>
 #include <limits>
+#include <cmath>
 
 #include "scene_definition.cpp"
 #include "ppm.cpp"
@@ -46,15 +47,41 @@ void generate_and_export(Render_Parameters &render_parameters)
 
 Vec3<float> canvas_to_viewport(int64_t x, int64_t y, Render_Parameters &parameters)
 {
-  Vec3<float> viewport = { (float) x, (float) y, parameters.projection_plane_d };
+  Vec3<float> viewport = { (float) x * (parameters.viewport_width / parameters.width), (float) y * (parameters.viewport_height / parameters.height), parameters.projection_plane_d };
   return viewport;
+}
+
+float dot_product(Vec3<float> v1, Vec3<float> v2)
+{
+  float result = 0;
+
+  result += v1.x * v2.x;
+  result += v1.y * v2.y;
+  result += v1.z * v2.z;
+
+  return result;
 }
 
 std::pair<float, float> ray_intersect_sphere(Vec3<float> origin, Vec3<float> ray_dir, const Sphere &sphere)
 {
-  // @todo João, terminar de implementar
+  float radius = sphere.radius;
+  Vec3<float> co = { origin.x - sphere.position.x, origin.y - sphere.position.y, origin.z - sphere.position.z, };
 
-  return std::make_pair(2, 2);
+  auto a = dot_product(ray_dir, ray_dir);
+  auto b = 2 * dot_product(co, ray_dir);
+  auto c = dot_product(co, co) - radius * radius;
+
+  auto discriminant = b * b - 4 * a * c;
+  
+  if (discriminant < 0.0)
+  {
+    return std::make_pair(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
+  }
+
+  auto t1 = (-1 * b + std::sqrt(discriminant)) / (2 * a);
+  auto t2 = (-1 * b - std::sqrt(discriminant)) / (2 * a);
+
+  return std::make_pair(t1, t2);
 }
 
 RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max)
@@ -62,7 +89,7 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
   float closest_hit = std::numeric_limits<float>::infinity();
   const Sphere *closest_object = NULL;
 
-  const RGB<uint8_t> background_color = { 0, 0, 0, };
+  const RGB<uint8_t> background_color = { 255, 255, 255, };
 
   // Por hora definido aqui
   Sphere sphere01 = {

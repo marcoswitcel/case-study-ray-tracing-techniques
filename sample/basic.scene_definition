@@ -1,6 +1,7 @@
 version 1.0
 
-dimension 1920 1080
+#dimension 1920 1080
+dimension 1080 1080
 
 viewport 1 1
 
