@@ -154,7 +154,10 @@ void ray_trace_scene(Render_Parameters &render_parameters)
   {
     for (int64_t y = -1 * half_height; y <= half_height; y++)
     {
-      auto &pixel = buffer[(y + half_height ) * width + (x + half_width)];
+      // @todo João, tem algum bug no eixo y, por isso está saindo invertido.
+      // Continuar investigando...
+      const auto flipped_y = y * -1; 
+      auto &pixel = buffer[(flipped_y + half_height ) * width + (x + half_width)];
 
       Vec3<float> ray_dir = canvas_to_viewport(x, y, render_parameters);
       pixel = trace_ray(origin, ray_dir, 1.0, std::numeric_limits<float>::infinity());
