@@ -42,7 +42,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'version' .\n";
+        std::cout << "[Scene_Loader] falou ao parsear 'version'.\n";
         continue;
       }
 
@@ -56,7 +56,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'width' .\n";
+        std::cout << "[Scene_Loader] falou ao parsear 'width'.\n";
         continue;
       }
 
@@ -64,7 +64,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'height' .\n";
+        std::cout << "[Scene_Loader] falou ao parsear 'height'.\n";
         continue;
       }
 
@@ -79,7 +79,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'viewport width' .\n";
+        std::cout << "[Scene_Loader] falou ao parsear 'viewport width'.\n";
         continue;
       }
 
@@ -87,7 +87,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'viewport height' .\n";
+        std::cout << "[Scene_Loader] falou ao parsear 'viewport height'.\n";
         continue;
       }
 
@@ -102,7 +102,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'projection_plane_d' .\n";
+        std::cout << "[Scene_Loader] falou ao parsear 'projection_plane_d'.\n";
         continue;
       }
 
