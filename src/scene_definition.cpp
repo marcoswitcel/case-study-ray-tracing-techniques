@@ -6,6 +6,9 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
+
+#include "sphere.hpp"
 
 struct Render_Parameters {
   size_t width;
@@ -13,6 +16,8 @@ struct Render_Parameters {
   float viewport_width;
   float viewport_height;
   float projection_plane_d;
+
+  std::vector<Sphere> scene_objects;
 };
 
 bool try_load_scene_definition(const char *filename, Render_Parameters &parameters)
@@ -33,6 +38,10 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     iss >> command;
 
     if (iss.fail()) continue;
+
+    if (command.empty()) continue;
+
+    if (command[0] == '#') continue;
     
     if (command == "version")
     {
@@ -42,7 +51,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'version'.\n";
+        std::cout << "[Scene_Loader] falhou ao parsear 'version'.\n";
         continue;
       }
 
@@ -56,7 +65,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'width'.\n";
+        std::cout << "[Scene_Loader] falhou ao parsear 'width'.\n";
         continue;
       }
 
@@ -64,7 +73,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'height'.\n";
+        std::cout << "[Scene_Loader] falhou ao parsear 'height'.\n";
         continue;
       }
 
@@ -79,7 +88,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'viewport width'.\n";
+        std::cout << "[Scene_Loader] falhou ao parsear 'viewport width'.\n";
         continue;
       }
 
@@ -87,7 +96,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'viewport height'.\n";
+        std::cout << "[Scene_Loader] falhou ao parsear 'viewport height'.\n";
         continue;
       }
 
@@ -102,11 +111,109 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       if (iss.fail())
       {
-        std::cout << "[Scene_Loader] falou ao parsear 'projection_plane_d'.\n";
+        std::cout << "[Scene_Loader] falhou ao parsear 'projection_plane_d'.\n";
         continue;
       }
 
       parameters.projection_plane_d = d;
+    }
+    else if (command == "Sphere")
+    {
+      Sphere sphere = { {0.0, 0.0, 0.0}, 1, { 0, 0, 0, } };
+
+      std::string property;
+
+      iss >> property;
+
+      if (iss.fail() || property != ".position")
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear propriedade 'position' da esfera.\n";
+        continue;
+      }
+
+      auto position = sphere.position;
+
+      iss >> position.x;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'x' propriedade 'position' da esfera.\n";
+        continue;
+      }
+
+      iss >> position.y;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'y' propriedade 'position' da esfera.\n";
+        continue;
+      }
+
+      iss >> position.z;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'z' propriedade 'position' da esfera.\n";
+        continue;
+      }
+
+      sphere.position = position;
+
+      iss >> property;
+
+      if (iss.fail() || property != ".radius")
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear propriedade 'radius' da esfera.\n";
+        continue;
+      }
+
+      iss >> sphere.radius;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear propriedade 'radius' da esfera.\n";
+        continue;
+      }
+
+      iss >> property;
+
+      if (iss.fail() || property != ".color")
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear propriedade 'color' da esfera.\n";
+        continue;
+      }
+
+      RGB<int> color;
+
+      iss >> color.r;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'r' propriedade 'color' da esfera.\n";
+        continue;
+      }
+
+      iss >> color.g;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'g' propriedade 'color' da esfera.\n";
+        continue;
+      }
+
+      iss >> color.b;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'b' propriedade 'color' da esfera.\n";
+        continue;
+      }
+
+      sphere.color.r = color.r;
+      sphere.color.g = color.g;
+      sphere.color.b = color.b;
+
+      parameters.scene_objects.push_back(sphere);
     }
     else
     {
