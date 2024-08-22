@@ -51,9 +51,10 @@ Vec3<float> canvas_to_viewport(int64_t x, int64_t y, Render_Parameters &paramete
   return viewport;
 }
 
-float dot_product(Vec3<float> v1, Vec3<float> v2)
+template <typename Type>
+Type dot_product(Vec3<Type> v1, Vec3<Type> v2)
 {
-  float result = 0;
+  Type result = 0;
 
   result += v1.x * v2.x;
   result += v1.y * v2.y;
