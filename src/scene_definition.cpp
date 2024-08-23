@@ -249,6 +249,18 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       parameters.scene_objects.push_back(sphere);
     }
+    else if (command == "Directional_Light")
+    {
+      // @todo João, terminar de implementar o carregamento
+    }
+    else if (command == "Point_Light")
+    {
+      // @todo João, terminar de implementar o carregamento
+    }
+    else if (command == "Ambient_Light")
+    {
+      // @todo João, terminar de implementar o carregamento
+    }
     else
     {
       printf("[Scene_Loader] instrução desconhecida '%s'.\n", command.c_str());

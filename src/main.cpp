@@ -11,6 +11,7 @@
 #include "color.hpp"
 #include "sphere.hpp"
 #include "vec3.hpp"
+#include "light.hpp"
 
 void export_ppm_sample()
 {
