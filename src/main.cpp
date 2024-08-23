@@ -85,14 +85,14 @@ std::pair<float, float> ray_intersect_sphere(Vec3<float> origin, Vec3<float> ray
   return std::make_pair(t1, t2);
 }
 
-RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, std::vector<Sphere> &scene_objects)
+RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters)
 {
   float closest_hit = std::numeric_limits<float>::infinity();
   const Sphere *closest_object = NULL;
 
-  const RGB<uint8_t> background_color = { 255, 255, 255, };
+  const RGB<uint8_t> &background_color = parameters.background_color;
 
-  for (const Sphere &object : scene_objects)
+  for (const Sphere &object : parameters.scene_objects)
   {
     auto [ t1, t2 ] = ray_intersect_sphere(origin, ray_dir, object);
 
@@ -140,7 +140,7 @@ void ray_trace_scene(Render_Parameters &render_parameters)
       auto &pixel = buffer[(flipped_y + half_height ) * width + (x + half_width)];
 
       Vec3<float> ray_dir = canvas_to_viewport(x, y, render_parameters);
-      pixel = trace_ray(origin, ray_dir, 1.0, std::numeric_limits<float>::infinity(), render_parameters.scene_objects);
+      pixel = trace_ray(origin, ray_dir, 1.0, std::numeric_limits<float>::infinity(), render_parameters);
     }
   }
 

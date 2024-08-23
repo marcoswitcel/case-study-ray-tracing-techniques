@@ -13,6 +13,7 @@
 struct Render_Parameters {
   size_t width;
   size_t height;
+  RGB<uint8_t> background_color;
   float viewport_width;
   float viewport_height;
   float projection_plane_d;
@@ -79,6 +80,39 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       parameters.width = width;
       parameters.height = height;
+    }
+    else if (command == "background_color")
+    {
+
+      RGB<int> color;
+
+      iss >> color.r;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'r' propriedade 'background_color' da esfera.\n";
+        continue;
+      }
+
+      iss >> color.g;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'g' propriedade 'background_color' da esfera.\n";
+        continue;
+      }
+
+      iss >> color.b;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'b' propriedade 'background_color' da esfera.\n";
+        continue;
+      }
+
+      parameters.background_color.r = color.r;
+      parameters.background_color.g = color.g;
+      parameters.background_color.b = color.b;
     }
     else if (command == "viewport")
     {
