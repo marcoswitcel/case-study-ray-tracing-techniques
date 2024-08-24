@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "sphere.hpp"
+#include "light.hpp"
 
 struct Render_Parameters {
   size_t width;
@@ -19,6 +20,7 @@ struct Render_Parameters {
   float projection_plane_d;
 
   std::vector<Sphere> scene_objects;
+  std::vector<Light> lights;
 };
 
 bool try_load_scene_definition(const char *filename, Render_Parameters &parameters)
@@ -259,7 +261,17 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     }
     else if (command == "Ambient_Light")
     {
-      // @todo João, terminar de implementar o carregamento
+      Light light = { .type = AMBIENT, };
+
+      iss >> light.intensity;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'intensity' da 'Ambient_Light'.\n";
+        continue;
+      }
+
+      parameters.lights.push_back(light);
     }
     else
     {

@@ -17,3 +17,5 @@ Sphere .position 2 0 4 .radius 1 .color 0 0 255
 Sphere .position -2 0 4 .radius 1 .color 0 255 0 
 
 # @todo João, implementar aqui a definição da luz ambiente
+
+Ambient_Light 0.2
