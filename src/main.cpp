@@ -86,6 +86,22 @@ std::pair<float, float> ray_intersect_sphere(Vec3<float> origin, Vec3<float> ray
   return std::make_pair(t1, t2);
 }
 
+float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, std::vector<Light> &scene_lights)
+{
+  float luminosity = 0.0;
+
+  for (const Light light : scene_lights)
+  {
+    if (light.type == AMBIENT)
+    {
+      luminosity += light.intensity;
+    }
+    // @todo João, terminar de implementar outros tipos de luzes aqui...
+  }
+
+  return luminosity;
+}
+
 RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters)
 {
   float closest_hit = std::numeric_limits<float>::infinity();
@@ -124,13 +140,12 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
       .z = intersection.z - closest_object->position.z,
     };
 
-    // @todo João, implementar
-    // sphere_normal = normalize(sphere_normal);
+    sphere_normal = normalize(sphere_normal);
 
     return {
-      .r = closest_object->color.r,
-      .g = closest_object->color.g,
-      .b = closest_object->color.b,
+      .r = static_cast<uint8_t>(closest_object->color.r * compute_light(intersection, sphere_normal, parameters.lights)),
+      .g = static_cast<uint8_t>(closest_object->color.g * compute_light(intersection, sphere_normal, parameters.lights)),
+      .b = static_cast<uint8_t>(closest_object->color.b * compute_light(intersection, sphere_normal, parameters.lights)),
     };
   }
 
