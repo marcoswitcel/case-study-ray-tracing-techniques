@@ -112,7 +112,26 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
 
   if (closest_object)
   {
-    return closest_object->color;
+    Vec3<float> intersection = {
+      .x = origin.x + closest_hit * ray_dir.x,
+      .y = origin.y + closest_hit * ray_dir.y,
+      .z = origin.z + closest_hit * ray_dir.z,
+    };
+
+    Vec3<float> sphere_normal = {
+      .x = intersection.x - closest_object->position.x,
+      .y = intersection.y - closest_object->position.y,
+      .z = intersection.z - closest_object->position.z,
+    };
+
+    // @todo João, implementar
+    // sphere_normal = normalize(sphere_normal);
+
+    return {
+      .r = closest_object->color.r,
+      .g = closest_object->color.g,
+      .b = closest_object->color.b,
+    };
   }
 
   return background_color;
