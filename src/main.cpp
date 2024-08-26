@@ -142,10 +142,12 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
 
     sphere_normal = normalize(sphere_normal);
 
+    float intensity = compute_light(intersection, sphere_normal, parameters.lights);
+
     return {
-      .r = static_cast<uint8_t>(closest_object->color.r * compute_light(intersection, sphere_normal, parameters.lights)),
-      .g = static_cast<uint8_t>(closest_object->color.g * compute_light(intersection, sphere_normal, parameters.lights)),
-      .b = static_cast<uint8_t>(closest_object->color.b * compute_light(intersection, sphere_normal, parameters.lights)),
+      .r = static_cast<uint8_t>(closest_object->color.r * intensity),
+      .g = static_cast<uint8_t>(closest_object->color.g * intensity),
+      .b = static_cast<uint8_t>(closest_object->color.b * intensity),
     };
   }
 

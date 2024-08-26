@@ -23,6 +23,49 @@ struct Render_Parameters {
   std::vector<Light> lights;
 };
 
+bool parse_vec3(std::istringstream &iss, std::string property_name, std::string command_name, Vec3<float> &position_out)
+{
+  std::string property;
+
+  iss >> property;
+
+  if (iss.fail() || property != property_name)
+  {
+    printf("[Scene_Loader] falhou ao parsear propriedade '%s' da %s.\n", property_name.c_str(), command_name.c_str());
+    return false;
+  }
+
+  auto position = position_out;
+
+  iss >> position.x;
+
+  if (iss.fail())
+  {
+    printf("[Scene_Loader] falhou ao parsear componente 'x' da propriedade '%s' do comando %s.\n", property_name.c_str(), command_name.c_str());
+    return false;
+  }
+
+  iss >> position.y;
+
+  if (iss.fail())
+  {
+    printf("[Scene_Loader] falhou ao parsear componente 'y' da propriedade '%s' do comando %s.\n", property_name.c_str(), command_name.c_str());
+    return false;
+  }
+
+  iss >> position.z;
+
+  if (iss.fail())
+  {
+    printf("[Scene_Loader] falhou ao parsear componente 'z' da propriedade '%s' do comando %s.\n", property_name.c_str(), command_name.c_str());
+    return false;
+  }
+
+  position_out = position;
+
+  return true;
+}
+
 bool try_load_scene_definition(const char *filename, Render_Parameters &parameters)
 {
   std::ifstream file(filename, std::ios::in);
@@ -253,11 +296,35 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     }
     else if (command == "Directional_Light")
     {
-      // @todo João, terminar de implementar o carregamento
+      Light light = { .type = DIRECTIONAL, };
+
+      iss >> light.intensity;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'intensity' da 'Directional_Light'.\n";
+        continue;
+      }
+
+      if (!parse_vec3(iss, ".position", "Directional_Light", light.position)) continue;
+
+      parameters.lights.push_back(light);
     }
     else if (command == "Point_Light")
     {
-      // @todo João, terminar de implementar o carregamento
+      Light light = { .type = POINT, };
+
+      iss >> light.intensity;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear 'intensity' da 'Point_Light'.\n";
+        continue;
+      }
+
+      if (!parse_vec3(iss, ".position", "Point_Light", light.position)) continue;
+
+      parameters.lights.push_back(light);
     }
     else if (command == "Ambient_Light")
     {
