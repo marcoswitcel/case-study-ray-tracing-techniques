@@ -155,7 +155,7 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
 }
 
 
-void ray_trace_scene(Render_Parameters &render_parameters)
+void ray_trace_scene(Render_Parameters &render_parameters, const char *output_filename)
 {
   const int64_t width = render_parameters.width;
   const int64_t height = render_parameters.height;
@@ -181,14 +181,16 @@ void ray_trace_scene(Render_Parameters &render_parameters)
     }
   }
 
-  export_ppm_binary_file("ray_traced_scene.ppm", render_parameters.width, render_parameters.height, (const uint8_t *)(buffer));
+  const char *filename = (output_filename != NULL) ? output_filename : "ray_traced_scene.ppm";
+  
+  export_ppm_binary_file(filename, render_parameters.width, render_parameters.height, (const uint8_t *)(buffer));
 }
 
 int main(int argc, const char *argv[])
 {
   std::cout << "Iniciando...\n";
 
-  if (argc != 3)
+  if (argc < 3)
   {
     std::cout << "Parâmetro --scene mal configurado ou faltando.\n";
     return EXIT_FAILURE;
@@ -201,6 +203,7 @@ int main(int argc, const char *argv[])
   }
 
   const char *scene_filename = argv[2];
+  const char *output_filename = (argc > 3) ? argv[3] : NULL;
 
   Render_Parameters render_parameters = {};
 
@@ -211,7 +214,7 @@ int main(int argc, const char *argv[])
 
   generate_and_export(render_parameters);
 
-  ray_trace_scene(render_parameters);
+  ray_trace_scene(render_parameters, output_filename);
 
   export_ppm_sample();
 
