@@ -30,3 +30,9 @@ Vec3<Type> normalize(Vec3<Type> vec)
   // @todo João, Não testada completamente essa função. Se for zero não deveria retornar zero?
   return  vec;
 }
+
+template <typename Type>
+Type length(Vec3<Type> vec)
+{
+  return std::sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+}

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <limits>
 #include <cmath>
+#include <assert.h>
 
 #include "scene_definition.cpp"
 #include "ppm.cpp"
@@ -96,7 +97,26 @@ float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, std::ve
     {
       luminosity += light.intensity;
     }
-    // @todo João, terminar de implementar outros tipos de luzes aqui...
+    else
+    {
+      Vec3<float> l;
+      if (light.type == POINT)
+      {
+        l = { light.position.x - intersection.x, light.position.y - intersection.y, light.position.z - intersection.z, };
+      }
+      else
+      {
+        assert(light.type == DIRECTIONAL);
+        l = light.position; // direction
+      }
+
+      auto nl = dot_product(sphere_normal, l);
+
+      if (nl > 0.0)
+      {
+        luminosity += light.intensity * nl/(length(sphere_normal) * length(l)); 
+      }
+    }
   }
 
   return luminosity;
