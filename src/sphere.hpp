@@ -9,4 +9,5 @@ struct Sphere {
   Vec3<float> position; // center
   float radius;
   RGB<uint8_t> color;
+  int specular;
 };

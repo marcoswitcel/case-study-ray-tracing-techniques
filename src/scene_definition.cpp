@@ -66,6 +66,16 @@ bool parse_vec3(std::istringstream &iss, std::string property_name, std::string 
   return true;
 }
 
+/**
+ * @brief 
+ * @note João, é necessário criar rotinas padrão para extrair atributos, isso
+ * porque o código abaixo precisar ser desduplicado.
+ * 
+ * @param filename 
+ * @param parameters 
+ * @return true 
+ * @return false 
+ */
 bool try_load_scene_definition(const char *filename, Render_Parameters &parameters)
 {
   std::ifstream file(filename, std::ios::in);
@@ -198,7 +208,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     }
     else if (command == "Sphere")
     {
-      Sphere sphere = { {0.0, 0.0, 0.0}, 1, { 0, 0, 0, } };
+      Sphere sphere = { {0.0, 0.0, 0.0}, 1, { 0, 0, 0, }, 0 };
 
       std::string property;
 
@@ -291,6 +301,20 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
       sphere.color.r = color.r;
       sphere.color.g = color.g;
       sphere.color.b = color.b;
+
+      iss >> property;
+
+      // atributo opcional
+      if (!iss.fail() && property == ".specular")
+      {
+        iss >> sphere.specular;
+
+        if (iss.fail())
+        {
+          std::cout << "[Scene_Loader] falhou ao parsear propriedade 'specular' da esfera.\n";
+          continue;
+        }
+      }
 
       parameters.scene_objects.push_back(sphere);
     }
