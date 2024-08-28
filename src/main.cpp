@@ -87,7 +87,7 @@ std::pair<float, float> ray_intersect_sphere(Vec3<float> origin, Vec3<float> ray
   return std::make_pair(t1, t2);
 }
 
-float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, std::vector<Light> &scene_lights)
+float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<float> to_camera, int specular, std::vector<Light> &scene_lights)
 {
   float luminosity = 0.0;
 
@@ -116,9 +116,24 @@ float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, std::ve
       {
         luminosity += light.intensity * nl/(length(sphere_normal) * length(l)); 
       }
+
+      if (specular > -1)
+      {
+        Vec3<float> reflection = {
+          .x = 2.0 * sphere_normal.x * nl - l.x,
+          .y = 2.0 * sphere_normal.y * nl - l.y,
+          .z = 2.0 * sphere_normal.z * nl - l.z,
+        };
+
+        auto rv = dot_product(reflection, to_camera);
+
+        if (rv > 0)
+        {
+          luminosity += light.intensity * std::pow(rv/(length(reflection) * length(to_camera)), specular);
+        }
+      }
     }
   }
-
   return luminosity;
 }
 
@@ -162,7 +177,13 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
 
     sphere_normal = normalize(sphere_normal);
 
-    float intensity = compute_light(intersection, sphere_normal, parameters.lights);
+    Vec3<float> to_camera = {
+      -ray_dir.x,
+      -ray_dir.y,
+      -ray_dir.z,
+    };
+
+    float intensity = compute_light(intersection, sphere_normal, to_camera, closest_object->specular, parameters.lights);
 
     return {
       .r = static_cast<uint8_t>(closest_object->color.r * intensity),
