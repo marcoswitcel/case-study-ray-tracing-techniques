@@ -120,9 +120,9 @@ float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<fl
       if (specular > -1)
       {
         Vec3<float> reflection = {
-          .x = 2.0 * sphere_normal.x * nl - l.x,
-          .y = 2.0 * sphere_normal.y * nl - l.y,
-          .z = 2.0 * sphere_normal.z * nl - l.z,
+          .x = 2.0f * sphere_normal.x * nl - l.x,
+          .y = 2.0f * sphere_normal.y * nl - l.y,
+          .z = 2.0f * sphere_normal.z * nl - l.z,
         };
 
         auto rv = dot_product(reflection, to_camera);
@@ -184,6 +184,11 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
     };
 
     float intensity = compute_light(intersection, sphere_normal, to_camera, closest_object->specular, parameters.lights);
+
+    if (intensity > 1.0f)
+    {
+      intensity = 1.0f;
+    }
 
     return {
       .r = static_cast<uint8_t>(closest_object->color.r * intensity),
