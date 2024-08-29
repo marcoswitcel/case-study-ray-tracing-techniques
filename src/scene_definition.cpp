@@ -208,7 +208,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     }
     else if (command == "Sphere")
     {
-      Sphere sphere = { {0.0, 0.0, 0.0}, 1, { 0, 0, 0, }, 0 };
+      Sphere sphere = { {0.0, 0.0, 0.0}, 1, { 0, 0, 0, }, -1 };
 
       std::string property;
 
