@@ -161,43 +161,43 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
     }
   }
 
-  if (closest_object)
+  if (closest_object == NULL)
   {
-    Vec3<float> intersection = {
-      .x = origin.x + closest_hit * ray_dir.x,
-      .y = origin.y + closest_hit * ray_dir.y,
-      .z = origin.z + closest_hit * ray_dir.z,
-    };
-
-    Vec3<float> sphere_normal = {
-      .x = intersection.x - closest_object->position.x,
-      .y = intersection.y - closest_object->position.y,
-      .z = intersection.z - closest_object->position.z,
-    };
-
-    sphere_normal = normalize(sphere_normal);
-
-    Vec3<float> to_camera = {
-      -ray_dir.x,
-      -ray_dir.y,
-      -ray_dir.z,
-    };
-
-    float intensity = compute_light(intersection, sphere_normal, to_camera, closest_object->specular, parameters.lights);
-
-    if (intensity > 1.0f)
-    {
-      intensity = 1.0f;
-    }
-
-    return {
-      .r = static_cast<uint8_t>(closest_object->color.r * intensity),
-      .g = static_cast<uint8_t>(closest_object->color.g * intensity),
-      .b = static_cast<uint8_t>(closest_object->color.b * intensity),
-    };
+    return background_color;
   }
 
-  return background_color;
+  Vec3<float> intersection = {
+    .x = origin.x + closest_hit * ray_dir.x,
+    .y = origin.y + closest_hit * ray_dir.y,
+    .z = origin.z + closest_hit * ray_dir.z,
+  };
+
+  Vec3<float> sphere_normal = {
+    .x = intersection.x - closest_object->position.x,
+    .y = intersection.y - closest_object->position.y,
+    .z = intersection.z - closest_object->position.z,
+  };
+
+  sphere_normal = normalize(sphere_normal);
+
+  Vec3<float> to_camera = {
+    -ray_dir.x,
+    -ray_dir.y,
+    -ray_dir.z,
+  };
+
+  float intensity = compute_light(intersection, sphere_normal, to_camera, closest_object->specular, parameters.lights);
+
+  if (intensity > 1.0f)
+  {
+    intensity = 1.0f;
+  }
+
+  return {
+    .r = static_cast<uint8_t>(closest_object->color.r * intensity),
+    .g = static_cast<uint8_t>(closest_object->color.g * intensity),
+    .b = static_cast<uint8_t>(closest_object->color.b * intensity),
+  };
 }
 
 
