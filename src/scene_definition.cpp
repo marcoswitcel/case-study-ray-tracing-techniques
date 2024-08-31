@@ -146,26 +146,8 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     }
     else if (command == "dimension")
     {
-      size_t width, height;
-
-      iss >> width;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'width'.\n";
-        continue;
-      }
-
-      iss >> height;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'height'.\n";
-        continue;
-      }
-
-      parameters.width = width;
-      parameters.height = height;
+      if (!try_parse_value(iss, "width", "dimension", parameters.width)) continue;
+      if (!try_parse_value(iss, "height", "dimension", parameters.height)) continue;
     }
     else if (command == "background_color")
     {
@@ -202,26 +184,8 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     }
     else if (command == "viewport")
     {
-      float viewport_width, viewport_height;
-
-      iss >> viewport_width;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'viewport width'.\n";
-        continue;
-      }
-
-      iss >> viewport_height;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'viewport height'.\n";
-        continue;
-      }
-
-      parameters.viewport_width = viewport_width;
-      parameters.viewport_height = viewport_height;
+      if (!try_parse_value(iss, "width", "viewport", parameters.viewport_width)) continue;
+      if (!try_parse_value(iss, "height", "viewport", parameters.viewport_height)) continue;
     }
     else if (command == "projection_plane_d")
     {
@@ -245,21 +209,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
       
       std::string property;
 
-      iss >> property;
-
-      if (iss.fail() || property != ".radius")
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear propriedade 'radius' da esfera.\n";
-        continue;
-      }
-
-      iss >> sphere.radius;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear propriedade 'radius' da esfera.\n";
-        continue;
-      }
+      if (!try_parse_property_value(iss, ".radius", "Sphere", sphere.radius)) continue;
 
       iss >> property;
 
@@ -304,13 +254,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
       // atributo opcional
       if (!iss.fail() && property == ".specular")
       {
-        iss >> sphere.specular;
-
-        if (iss.fail())
-        {
-          std::cout << "[Scene_Loader] falhou ao parsear propriedade 'specular' da esfera.\n";
-          continue;
-        }
+        if (!try_parse_value(iss, ".specular", "Sphere", sphere.specular)) continue;
       }
 
       parameters.scene_objects.push_back(sphere);
@@ -319,13 +263,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     {
       Light light = { .type = DIRECTIONAL, };
 
-      iss >> light.intensity;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'intensity' da 'Directional_Light'.\n";
-        continue;
-      }
+      if (!try_parse_value(iss, "intensity", "Directional_Light", light.intensity)) continue;
 
       if (!try_parse_vec3(iss, ".position", "Directional_Light", light.position)) continue;
 
@@ -335,13 +273,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     {
       Light light = { .type = POINT, };
 
-      iss >> light.intensity;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'intensity' da 'Point_Light'.\n";
-        continue;
-      }
+      if (!try_parse_value(iss, "intensity", "Point_Light", light.intensity)) continue;
 
       if (!try_parse_vec3(iss, ".position", "Point_Light", light.position)) continue;
 
@@ -351,13 +283,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     {
       Light light = { .type = AMBIENT, };
 
-      iss >> light.intensity;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'intensity' da 'Ambient_Light'.\n";
-        continue;
-      }
+      if (!try_parse_value(iss, "intensity", "Ambient_Light", light.intensity)) continue;
 
       parameters.lights.push_back(light);
     }
