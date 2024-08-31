@@ -23,7 +23,22 @@ struct Render_Parameters {
   std::vector<Light> lights;
 };
 
-bool parse_vec3(std::istringstream &iss, std::string property_name, std::string command_name, Vec3<float> &position_out)
+template <typename Type>
+bool try_parse_value(std::istringstream &iss, std::string property_name, std::string command_name, Type &property_slot)
+{
+  iss >> property_slot;
+
+  if (iss.fail())
+  {
+    printf("[Scene_Loader] falhou ao parsear o valor da propriedade '%s' da %s.\n", property_name.c_str(), command_name.c_str());
+    return false;
+  }
+
+  return true;
+}
+
+template <typename Type>
+bool try_parse_property_value(std::istringstream &iss, std::string property_name, std::string command_name, Type &property_slot)
 {
   std::string property;
 
@@ -35,9 +50,25 @@ bool parse_vec3(std::istringstream &iss, std::string property_name, std::string 
     return false;
   }
 
-  auto position = position_out;
+  return try_parse_value(iss, property_name, command_name, property_slot);
+}
 
-  iss >> position.x;
+template <typename Type>
+bool try_parse_vec3(std::istringstream &iss, std::string property_name, std::string command_name, Vec3<Type> &vec3_out)
+{
+  std::string property;
+
+  iss >> property;
+
+  if (iss.fail() || property != property_name)
+  {
+    printf("[Scene_Loader] falhou ao parsear propriedade '%s' da %s.\n", property_name.c_str(), command_name.c_str());
+    return false;
+  }
+
+  auto vec3_local = vec3_out;
+
+  iss >> vec3_local.x;
 
   if (iss.fail())
   {
@@ -45,7 +76,7 @@ bool parse_vec3(std::istringstream &iss, std::string property_name, std::string 
     return false;
   }
 
-  iss >> position.y;
+  iss >> vec3_local.y;
 
   if (iss.fail())
   {
@@ -53,7 +84,7 @@ bool parse_vec3(std::istringstream &iss, std::string property_name, std::string 
     return false;
   }
 
-  iss >> position.z;
+  iss >> vec3_local.z;
 
   if (iss.fail())
   {
@@ -61,7 +92,7 @@ bool parse_vec3(std::istringstream &iss, std::string property_name, std::string 
     return false;
   }
 
-  position_out = position;
+  vec3_out = vec3_local;
 
   return true;
 }
@@ -210,43 +241,9 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     {
       Sphere sphere = { {0.0, 0.0, 0.0}, 1, { 0, 0, 0, }, -1 };
 
+      if (!try_parse_vec3(iss, ".position", "Sphere", sphere.position)) continue;
+      
       std::string property;
-
-      iss >> property;
-
-      if (iss.fail() || property != ".position")
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear propriedade 'position' da esfera.\n";
-        continue;
-      }
-
-      auto position = sphere.position;
-
-      iss >> position.x;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'x' propriedade 'position' da esfera.\n";
-        continue;
-      }
-
-      iss >> position.y;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'y' propriedade 'position' da esfera.\n";
-        continue;
-      }
-
-      iss >> position.z;
-
-      if (iss.fail())
-      {
-        std::cout << "[Scene_Loader] falhou ao parsear 'z' propriedade 'position' da esfera.\n";
-        continue;
-      }
-
-      sphere.position = position;
 
       iss >> property;
 
@@ -330,7 +327,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
         continue;
       }
 
-      if (!parse_vec3(iss, ".position", "Directional_Light", light.position)) continue;
+      if (!try_parse_vec3(iss, ".position", "Directional_Light", light.position)) continue;
 
       parameters.lights.push_back(light);
     }
@@ -346,7 +343,7 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
         continue;
       }
 
-      if (!parse_vec3(iss, ".position", "Point_Light", light.position)) continue;
+      if (!try_parse_vec3(iss, ".position", "Point_Light", light.position)) continue;
 
       parameters.lights.push_back(light);
     }
