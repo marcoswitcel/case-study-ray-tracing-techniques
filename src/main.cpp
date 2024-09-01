@@ -90,11 +90,11 @@ std::pair<float, float> ray_intersect_sphere(Vec3<float> origin, Vec3<float> ray
 // @todo João, remover essa assinatura
 std::pair<float, const Sphere*> closest_intersection(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters);
 
-float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<float> to_camera, int specular, std::vector<Light> &scene_lights,Render_Parameters &parameters)
+float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<float> to_camera, int specular, Render_Parameters &parameters)
 {
   float luminosity = 0.0;
 
-  for (const Light light : scene_lights)
+  for (const Light light : parameters.lights)
   {
     if (light.type == AMBIENT)
     {
@@ -206,7 +206,7 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
     -ray_dir.z,
   };
 
-  float intensity = compute_light(intersection, sphere_normal, to_camera, closest_object->specular, parameters.lights, parameters);
+  float intensity = compute_light(intersection, sphere_normal, to_camera, closest_object->specular, parameters);
 
   if (intensity > 1.0f)
   {
