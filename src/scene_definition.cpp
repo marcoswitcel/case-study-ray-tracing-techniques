@@ -145,6 +145,20 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
 
       printf("[Scene_Loader] Arquivo na versão '%s'.\n", version.c_str());
     }
+    else if (command == "cast_shadow")
+    {
+      std::string value;
+
+      iss >> value;
+
+      if (iss.fail())
+      {
+        std::cout << "[Scene_Loader] falhou ao parsear valor de 'cast_shadow'.\n";
+        continue;
+      }
+
+      parameters.is_casting_shadows = (value == "true");
+    }
     else if (command == "dimension")
     {
       if (!try_parse_value(iss, "width", "dimension", parameters.width)) continue;

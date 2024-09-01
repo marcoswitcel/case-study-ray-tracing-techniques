@@ -271,10 +271,8 @@ int main(int argc, const char *argv[])
   const char *scene_filename = argv[2];
   const char *output_filename = (argc > 3) ? argv[3] : NULL;
 
-  Render_Parameters render_parameters = {};
-
   // @todo João, fazer um inicializador para essa estrutura
-  render_parameters.is_casting_shadows = true;
+  Render_Parameters render_parameters = {};
 
   if (!try_load_scene_definition(scene_filename, render_parameters))
   {
