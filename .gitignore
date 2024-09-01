@@ -1,3 +1,6 @@
 
+# coisas da IDE
+.vscode/*
+
 # executável e outros artefatos
 target/*
