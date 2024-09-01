@@ -87,7 +87,10 @@ std::pair<float, float> ray_intersect_sphere(Vec3<float> origin, Vec3<float> ray
   return std::make_pair(t1, t2);
 }
 
-float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<float> to_camera, int specular, std::vector<Light> &scene_lights)
+// @todo João, remover essa assinatura
+std::pair<float, const Sphere*> closest_intersection(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters);
+
+float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<float> to_camera, int specular, std::vector<Light> &scene_lights,Render_Parameters &parameters)
 {
   float luminosity = 0.0;
 
@@ -100,14 +103,24 @@ float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<fl
     else
     {
       Vec3<float> l;
+      float t_max;
       if (light.type == POINT)
       {
         l = { light.position.x - intersection.x, light.position.y - intersection.y, light.position.z - intersection.z, };
+        t_max = 1.0;
       }
       else
       {
         assert(light.type == DIRECTIONAL);
         l = light.position; // direction
+        t_max = std::numeric_limits<float>::infinity();
+      }
+
+      auto [ _, closest_shadowing_object ] = closest_intersection(intersection, l, 0.001f, t_max, parameters);
+
+      if (closest_shadowing_object != NULL)
+      {
+        continue;
       }
 
       auto nl = dot_product(sphere_normal, l);
@@ -193,7 +206,7 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
     -ray_dir.z,
   };
 
-  float intensity = compute_light(intersection, sphere_normal, to_camera, closest_object->specular, parameters.lights);
+  float intensity = compute_light(intersection, sphere_normal, to_camera, closest_object->specular, parameters.lights, parameters);
 
   if (intensity > 1.0f)
   {
