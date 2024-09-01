@@ -138,11 +138,14 @@ float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<fl
         t_max = std::numeric_limits<float>::infinity();
       }
 
-      auto [ _, closest_shadowing_object ] = closest_intersection(intersection, l, 0.001f, t_max, parameters);
-
-      if (closest_shadowing_object != NULL)
+      if (parameters.is_casting_shadows)
       {
-        continue;
+        auto [ _, closest_shadowing_object ] = closest_intersection(intersection, l, 0.001f, t_max, parameters);
+
+        if (closest_shadowing_object != NULL)
+        {
+          continue;
+        }
       }
 
       auto nl = dot_product(sphere_normal, l);
@@ -269,6 +272,9 @@ int main(int argc, const char *argv[])
   const char *output_filename = (argc > 3) ? argv[3] : NULL;
 
   Render_Parameters render_parameters = {};
+
+  // @todo João, fazer um inicializador para essa estrutura
+  render_parameters.is_casting_shadows = true;
 
   if (!try_load_scene_definition(scene_filename, render_parameters))
   {

@@ -18,6 +18,7 @@ struct Render_Parameters {
   float viewport_width;
   float viewport_height;
   float projection_plane_d;
+  bool is_casting_shadows;
 
   std::vector<Sphere> scene_objects;
   std::vector<Light> lights;
