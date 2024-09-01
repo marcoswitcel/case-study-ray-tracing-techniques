@@ -137,12 +137,10 @@ float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<fl
   return luminosity;
 }
 
-RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters)
+std::pair<float, const Sphere*> closest_intersection(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters)
 {
   float closest_hit = std::numeric_limits<float>::infinity();
   const Sphere *closest_object = NULL;
-
-  const RGB<uint8_t> &background_color = parameters.background_color;
 
   for (const Sphere &object : parameters.scene_objects)
   {
@@ -160,6 +158,15 @@ RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, flo
       closest_object = &object;
     }
   }
+
+  return std::make_pair(closest_hit, closest_object);
+}
+
+RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters)
+{
+  auto [ closest_hit, closest_object ] = closest_intersection(origin, ray_dir, t_min, t_max, parameters);
+
+  const RGB<uint8_t> &background_color = parameters.background_color;
 
   if (closest_object == NULL)
   {
