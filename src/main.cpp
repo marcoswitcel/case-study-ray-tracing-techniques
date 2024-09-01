@@ -87,8 +87,30 @@ std::pair<float, float> ray_intersect_sphere(Vec3<float> origin, Vec3<float> ray
   return std::make_pair(t1, t2);
 }
 
-// @todo João, remover essa assinatura
-std::pair<float, const Sphere*> closest_intersection(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters);
+std::pair<float, const Sphere*> closest_intersection(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters)
+{
+  float closest_hit = std::numeric_limits<float>::infinity();
+  const Sphere *closest_object = NULL;
+
+  for (const Sphere &object : parameters.scene_objects)
+  {
+    auto [ t1, t2 ] = ray_intersect_sphere(origin, ray_dir, object);
+
+    if (t_min <= t1 && t1  <= t_max && t1 < closest_hit)
+    {
+      closest_hit = t1;
+      closest_object = &object;
+    }
+
+    if (t_min <= t2 && t2  <= t_max && t2 < closest_hit)
+    {
+      closest_hit = t2;
+      closest_object = &object;
+    }
+  }
+
+  return std::make_pair(closest_hit, closest_object);
+}
 
 float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<float> to_camera, int specular, Render_Parameters &parameters)
 {
@@ -148,31 +170,6 @@ float compute_light(Vec3<float> intersection, Vec3<float> sphere_normal, Vec3<fl
     }
   }
   return luminosity;
-}
-
-std::pair<float, const Sphere*> closest_intersection(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters)
-{
-  float closest_hit = std::numeric_limits<float>::infinity();
-  const Sphere *closest_object = NULL;
-
-  for (const Sphere &object : parameters.scene_objects)
-  {
-    auto [ t1, t2 ] = ray_intersect_sphere(origin, ray_dir, object);
-
-    if (t_min <= t1 && t1  <= t_max && t1 < closest_hit)
-    {
-      closest_hit = t1;
-      closest_object = &object;
-    }
-
-    if (t_min <= t2 && t2  <= t_max && t2 < closest_hit)
-    {
-      closest_hit = t2;
-      closest_object = &object;
-    }
-  }
-
-  return std::make_pair(closest_hit, closest_object);
 }
 
 RGB<uint8_t> trace_ray(Vec3<float> origin, Vec3<float> ray_dir, float t_min, float t_max, Render_Parameters &parameters)
