@@ -1,9 +1,9 @@
 #pragma once
 
-template <typename Type>
+template <typename Pixel_Type>
 struct Image {
   size_t width;
   size_t height;
 
-  Type *buffer;
+  Pixel_Type *buffer;
 };

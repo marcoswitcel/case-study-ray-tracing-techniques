@@ -27,8 +27,7 @@ Vec3<Type> normalize(Vec3<Type> vec)
     return { vec.x / length, vec.y / length, vec.z / length };
   }
 
-  // @todo João, Não testada completamente essa função. Se for zero não deveria retornar zero?
-  return  vec;
+  return  { 0, 0, 0, };
 }
 
 template <typename Type>
