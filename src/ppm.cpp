@@ -20,7 +20,8 @@ bool export_ppm_binary_file(const char *filename, const size_t width, const size
 
   ofs << "P6" << std::endl; // magic number
   ofs << width << ' ' << height << std::endl; // dimensões - width espaço height
-  ofs << "255" << std::endl; // fixo?
+  // @note valor máximo permitido para cada componente do pixel
+  ofs << "255" << std::endl;
 
   for (size_t i = 0; i < (width * height * 3); i += 3)
   {
