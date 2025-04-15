@@ -1,21 +1,9 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
 #include <iostream>
 #include <fstream>
 
-enum PPM_Magic_Identifier {
-  P6, // binário
-  p3, // ascii/textual
-};
-
-struct PPM {
-  const PPM_Magic_Identifier type;
-  const size_t width;
-  const size_t height;
-  const uint8_t *buffer; 
-};
+#include "./ppm.hpp"
 
 // @todo João, função para loadar ppm
 
