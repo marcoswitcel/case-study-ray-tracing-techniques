@@ -7,7 +7,7 @@
  * @brief PPM identificadores
  * 
  */
-enum PPM_Magic_Identifier {
+enum PPM_Type {
   // P1, // não suportados
   // P2, // não suportados
   // P3, // ascii/textual // não suportados
@@ -28,7 +28,7 @@ const char *magic_identifiers[] = {
  * 
  */
 struct PPM_File {
-  PPM_Magic_Identifier type;
+  PPM_Type type;
   size_t width;
   size_t height;
   uint8_t *buffer;
@@ -37,3 +37,4 @@ struct PPM_File {
 // @todo João, função para loadar ppm
 
 bool export_ppm_binary_file(const char *filename, const size_t width, const size_t height, const uint8_t *buffer);
+bool export_ppm_binary_file(PPM_Type type, const char *filename, const size_t width, const size_t height, const uint8_t *buffer);
