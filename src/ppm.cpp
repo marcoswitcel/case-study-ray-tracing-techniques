@@ -14,13 +14,13 @@
  */
 bool export_ppm_binary_file(const char *filename, const size_t width, const size_t height, const uint8_t *buffer)
 {
-  return export_ppm_binary_file(P6, filename,  width,  height, buffer);
+  return export_portable_anymap_format(P6, filename,  width,  height, buffer);
 }
 
-bool export_ppm_binary_file(PPM_Type type, const char *filename, const size_t width, const size_t height, const uint8_t *buffer)
+bool export_portable_anymap_format(PNM_Type type, const char *filename, const size_t width, const size_t height, const uint8_t *buffer)
 {
   auto openmode = std::ios_base::out;
-  if (type == P6) openmode |= std::ios_base::binary;
+  if (type > P3) openmode |= std::ios_base::binary;
 
   const char *magic_ident = magic_identifiers[type];
 
@@ -34,9 +34,13 @@ bool export_ppm_binary_file(PPM_Type type, const char *filename, const size_t wi
   // segunda linha dimensões: largura espaço altura
   ofs << width << ' ' << height << std::endl; 
   // @terceira linha: valor máximo permitido para cada componente do pixel
-  ofs << "255" << std::endl;
+  if (type != P1 && type != P4)
+  {
+    ofs << "255" << std::endl;
+  }
 
   // dados da imagem
+  // @todo João, implementar limite de caracteres por linha...
   for (size_t i = 0; i < (width * height * 3); i += 3)
   {
     uint8_t color[3] = { buffer[i + 0], buffer[i + 1], buffer[i + 2], };
