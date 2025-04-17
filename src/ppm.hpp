@@ -38,7 +38,7 @@ const char *extensions_per_type[] = {
  * @brief representa um arquivo PPM carregado
  * 
  */
-struct PPM_File {
+struct PNM_File {
   PNM_Type type;
   size_t width;
   size_t height;

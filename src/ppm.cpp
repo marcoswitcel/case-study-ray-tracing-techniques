@@ -20,7 +20,9 @@ bool export_ppm_binary_file(const char *filename, const size_t width, const size
 bool export_portable_anymap_format(PNM_Type type, const char *filename, const size_t width, const size_t height, const uint8_t *buffer)
 {
   auto openmode = std::ios_base::out;
+  auto n_colors_per_pixel = 1;
   if (type > P3) openmode |= std::ios_base::binary;
+  if (type == P3 || type == P6) n_colors_per_pixel = 3;
 
   const char *magic_ident = magic_identifiers[type];
 
@@ -41,12 +43,9 @@ bool export_portable_anymap_format(PNM_Type type, const char *filename, const si
 
   // dados da imagem
   // @todo João, implementar limite de caracteres por linha...
-  for (size_t i = 0; i < (width * height * 3); i += 3)
+  for (size_t i = 0; i < (width * height * n_colors_per_pixel); i += 1)
   {
-    uint8_t color[3] = { buffer[i + 0], buffer[i + 1], buffer[i + 2], };
-
-    // não falta espaço ou enters?
-    ofs << color[0] << color[1] << color[2];
+    ofs << buffer[i];
   }
 
   ofs.close();
