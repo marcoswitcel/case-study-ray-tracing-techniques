@@ -35,7 +35,7 @@ bool export_portable_anymap_format(PNM_Type type, const char *filename, const si
   ofs << magic_ident << std::endl; 
   // segunda linha dimensões: largura espaço altura
   ofs << width << ' ' << height << std::endl; 
-  // @terceira linha: valor máximo permitido para cada componente do pixel
+  // terceira linha: valor máximo permitido para cada componente do pixel
   if (type != P1 && type != P4)
   {
     ofs << "255" << std::endl;
@@ -43,6 +43,8 @@ bool export_portable_anymap_format(PNM_Type type, const char *filename, const si
 
   // dados da imagem
   // @todo João, implementar limite de caracteres por linha...
+  // @todo João, ajustar para fazer em um write apenas
+  // @todo João, avaliar e decidir como receber e escrever arquivos P1 e P4
   for (size_t i = 0; i < (width * height * n_colors_per_pixel); i += 1)
   {
     ofs << buffer[i];
