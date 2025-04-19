@@ -1,0 +1,26 @@
+version 1.0
+
+#dimension 1920 1080
+dimension 2160 2160
+
+#viewport 16 9
+viewport 1 1
+
+cast_shadow true
+
+projection_plane_d 1
+
+background_color 255 255 255
+
+Sphere .position 0 0 12 .radius 1 .color 255 0 0 .specular 500
+Sphere .position 0 2 12 .radius 1 .color 255 0 0 .specular 500
+Sphere .position 0 4 12 .radius 1 .color 255 0 0 .specular 500
+
+# plano
+Sphere .position 0 -5001 0 .radius 5000 .color 255 255 0 .specular 1000
+
+Ambient_Light 0.2
+
+Point_Light 0.6 .position 2 1 0
+
+Directional_Light 0.2 .position 1 4 4
