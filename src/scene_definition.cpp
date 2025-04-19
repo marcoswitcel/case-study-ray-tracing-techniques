@@ -25,6 +25,20 @@ struct Render_Parameters {
 };
 
 template <typename Type>
+bool try_parse_value(std::istringstream &iss, std::string command_name, Type &property_slot)
+{
+  iss >> property_slot;
+
+  if (iss.fail())
+  {
+    printf("[Scene_Loader] falhou ao parsear o valor de '%s'.\n", command_name.c_str());
+    return false;
+  }
+
+  return true;
+}
+
+template <typename Type>
 bool try_parse_value(std::istringstream &iss, std::string property_name, std::string command_name, Type &property_slot)
 {
   iss >> property_slot;
@@ -134,26 +148,20 @@ bool try_load_scene_definition(const char *filename, Render_Parameters &paramete
     if (command == "version")
     {
       std::string version;
-
-      iss >> version;
-
-      if (iss.fail())
+      
+      if (!try_parse_value(iss, "version", version))
       {
-        std::cout << "[Scene_Loader] falhou ao parsear 'version'.\n";
         continue;
       }
-
+      
       printf("[Scene_Loader] Arquivo na versão '%s'.\n", version.c_str());
     }
     else if (command == "cast_shadow")
     {
       std::string value;
 
-      iss >> value;
-
-      if (iss.fail())
+      if (!try_parse_value(iss, "cast_shadow", value))
       {
-        std::cout << "[Scene_Loader] falhou ao parsear valor de 'cast_shadow'.\n";
         continue;
       }
 
